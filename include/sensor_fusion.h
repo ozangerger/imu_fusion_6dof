@@ -19,6 +19,7 @@ public:
     float roll{};
     float pitch{};
     float yaw{};
+    float delta_t{};
 };
 
 void print_sf(const sensorFusion_T& sf);

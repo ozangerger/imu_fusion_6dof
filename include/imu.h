@@ -19,34 +19,39 @@
 class imu_T {
 private:
     float Ts = 0.01F;
+    struct calibration {
+        float offsAccel[3];
+        float offsGyro[3];
+    } calibration{};
 
     struct settings_T {
-        lsm6ds_gyro_range_t   gyro_range  = LSM6DS_GYRO_RANGE_2000_DPS;
-        lsm6ds_accel_range_t  accel_range = LSM6DS_ACCEL_RANGE_8_G;
-        lsm6ds_data_rate_t    data_rate   = LSM6DS_RATE_833_HZ;
-        lsm6ds_hp_filter_t    hp_filter   = LSM6DS_HPF_ODR_DIV_400;
+        lsm6ds_gyro_range_t   gyro_range      = LSM6DS_GYRO_RANGE_125_DPS;
+        lsm6ds_accel_range_t  accel_range     = LSM6DS_ACCEL_RANGE_4_G;
+        lsm6ds_data_rate_t    accel_data_rate = LSM6DS_RATE_208_HZ;
+        lsm6ds_data_rate_t    gyro_data_rate  = LSM6DS_RATE_208_HZ;
+        lsm6ds_hp_filter_t    hp_filter       = LSM6DS_HPF_ODR_DIV_100;
     } settings;
 
 public:
-    explicit imu_T(Adafruit_LSM6DSOX& imu, float Ts, float w_c) :  Ts(Ts), sox(imu)  {
-        filters.accX.Reconfigure(w_c, Ts);
-        filters.accY.Reconfigure(w_c, Ts);
-        filters.accZ.Reconfigure(w_c, Ts);
-        filters.gyX.Reconfigure(w_c, Ts);
-        filters.gyY.Reconfigure(w_c, Ts);
-        filters.gyZ.Reconfigure(w_c, Ts);
+    explicit imu_T(Adafruit_LSM6DSOX& imu, float Ts, float w_c_accel, float w_c_gyro) :  Ts(Ts), sox(imu)  {
+        filters.accX.Reconfigure(w_c_accel, Ts);
+        filters.accY.Reconfigure(w_c_accel, Ts);
+        filters.accZ.Reconfigure(w_c_accel, Ts);
+        filters.gyX.Reconfigure(w_c_gyro, Ts);
+        filters.gyY.Reconfigure(w_c_gyro, Ts);
+        filters.gyZ.Reconfigure(w_c_gyro, Ts);
     };
 
     struct filters {
         explicit filters(float Ts) : Ts(Ts){};
         float Ts;
 
-        LowPassFilter accX{20.0F, Ts};
-        LowPassFilter accY{20.0F, Ts};
-        LowPassFilter accZ{20.0F, Ts};
-        LowPassFilter  gyX{20.0F, Ts};
-        LowPassFilter  gyY{20.0F, Ts};
-        LowPassFilter  gyZ{20.0F, Ts};
+        LowPassFilter accX{20.0F * 2.0F * M_PI, Ts};
+        LowPassFilter accY{20.0F * 2.0F * M_PI, Ts};
+        LowPassFilter accZ{20.0F * 2.0F * M_PI, Ts};
+        LowPassFilter  gyX{0.5F  * 2.0F * M_PI, Ts};
+        LowPassFilter  gyY{20.0F * 2.0F * M_PI, Ts};
+        LowPassFilter  gyZ{20.0F * 2.0F * M_PI, Ts};
     } filters{Ts};
 
     bool serial = false;
@@ -56,6 +61,8 @@ public:
     settings_T GetSettings() {return this->settings;};
 
     void filter();
+
+    void set_calibration(const float acc[3], const float gyro[3]);
 
     struct data {
         sensors_event_t accel{};

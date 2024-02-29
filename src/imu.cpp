@@ -8,8 +8,8 @@ class LowPassFilter;
 
 void setup_imu(imu_T& imu, unsigned long baudrate) {
     Serial.begin(baudrate);
-    while (!Serial)
-        delay(10);
+    /*while (!Serial)
+        delay(10);*/
 
     if (!imu.sox.begin_I2C()) {
         // if (!sox.begin_SPI(LSM_CS)) {
@@ -25,7 +25,8 @@ void setup_imu(imu_T& imu, unsigned long baudrate) {
 
     imu.sox.setAccelRange(imu.GetSettings().accel_range);
     imu.sox.setGyroRange(imu.GetSettings().gyro_range);
-    imu.sox.setGyroDataRate(imu.GetSettings().data_rate);
+    imu.sox.setAccelDataRate(imu.GetSettings().accel_data_rate);
+    imu.sox.setGyroDataRate(imu.GetSettings().gyro_data_rate);
     imu.sox.highPassFilter(false, imu.GetSettings().hp_filter);
 };
 
@@ -51,8 +52,20 @@ void print_imu(const imu_T& imu) {
 };
 
 void imu_T::update() {
-    sox.readAcceleration(raw_data.accel.acceleration.x, raw_data.accel.acceleration.y, raw_data.accel.acceleration.z);
-    sox.readGyroscope(raw_data.gyro.gyro.x, raw_data.gyro.gyro.y, raw_data.gyro.gyro.z);
+    if(sox.accelerationAvailable()){
+        sox.readAcceleration(raw_data.accel.acceleration.x, raw_data.accel.acceleration.y, raw_data.accel.acceleration.z);
+        raw_data.accel.acceleration.x += calibration.offsAccel[0];
+        raw_data.accel.acceleration.y += calibration.offsAccel[1];
+        raw_data.accel.acceleration.z += calibration.offsAccel[2];
+    }
+    if(sox.gyroscopeAvailable())
+    {
+        sox.readGyroscope(raw_data.gyro.gyro.x, raw_data.gyro.gyro.y, raw_data.gyro.gyro.z);
+        raw_data.gyro.gyro.x += calibration.offsGyro[0];
+        raw_data.gyro.gyro.y += calibration.offsGyro[1];
+        raw_data.gyro.gyro.z += calibration.offsGyro[2];
+    }
+
     this->filter();
 };
 
@@ -74,3 +87,9 @@ void imu_T::filter() {
     filtered_data.gyro.gyro.z = filters.gyZ.GetOutput();
 }
 
+void imu_T::set_calibration(const float acc[3], const float gyro[3]) {
+    for (int i = 0; i < 3 ; i++){
+        calibration.offsAccel[i] = acc[i];
+        calibration.offsGyro[i] = gyro[i];
+    }
+}

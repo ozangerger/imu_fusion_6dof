@@ -5,11 +5,16 @@
 #include "imu.h"
 
 void sensorFusion_T::update() {
-    const float delta_t = sf.deltatUpdate();
     //choose only one of these two:
-    sf.MahonyUpdate(imu.filtered_data.gyro.gyro.x, imu.filtered_data.gyro.gyro.y,
-                    imu.filtered_data.gyro.gyro.z,imu.filtered_data.accel.acceleration.x,
-                    imu.filtered_data.accel.acceleration.y, imu.filtered_data.accel.acceleration.z, delta_t);  //mahony is suggested if there isn't the mag and the mcu is slow
+    // gyro inputs are rad/s, accelerometer inputs are m/s2
+
+    sf.MahonyUpdate(imu.filtered_data.gyro.gyro.x,
+                    imu.filtered_data.gyro.gyro.y,
+                    imu.filtered_data.gyro.gyro.z,
+                    imu.filtered_data.accel.acceleration.x * SENSORS_GRAVITY_EARTH,
+                    imu.filtered_data.accel.acceleration.y * SENSORS_GRAVITY_EARTH,
+                    imu.filtered_data.accel.acceleration.z * SENSORS_GRAVITY_EARTH,
+                    delta_t);  //mahony is suggested if there isn't the mag and the mcu is slow
     //fusion.MadgwickUpdate(gyros[0], gyros[1], gyros[2], acc[0], acc[1], acc[2], mag[0], mag[1], mag[2], deltat);  //else use the magwick, it is slower but more accurate
     pitch = sf.getPitch();
     roll = sf.getRoll();    //you could also use getRollRadians() ecc
