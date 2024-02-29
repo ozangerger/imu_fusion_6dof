@@ -14,7 +14,7 @@ public:
     sensorFusion_T(const imu_T& imu, SF& sf) : imu(imu), sf(sf) {};
     const imu_T& imu;
     SF& sf;
-    void update(float delta_t);
+    void update();
 
     float roll{};
     float pitch{};

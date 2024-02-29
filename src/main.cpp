@@ -4,7 +4,7 @@
 
 SF fusion;
 Adafruit_LSM6DSOX sox;
-imu_T imu(sox, 0.01F, 20.0F);
+imu_T imu(sox, 0.01F, 50.0F);
 sensorFusion_T sf(imu, fusion);
 
 void setup() {
@@ -16,11 +16,9 @@ void loop() {
 
     imu.update();
 
-    const float deltat = sf.sf.deltatUpdate(); //this have to be done before calling the fusion update
+    sf.update();
 
-    sf.update(deltat);
-
-    //print_imu(imu);
+    print_imu(imu);
 
     print_sf(sf);
 

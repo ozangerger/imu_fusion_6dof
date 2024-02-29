@@ -21,9 +21,9 @@ private:
     float Ts = 0.01F;
 
     struct settings_T {
-        lsm6ds_gyro_range_t   gyro_range  = LSM6DS_GYRO_RANGE_125_DPS;
-        lsm6ds_accel_range_t  accel_range = LSM6DS_ACCEL_RANGE_4_G;
-        lsm6ds_data_rate_t    data_rate   = LSM6DS_RATE_1_66K_HZ;
+        lsm6ds_gyro_range_t   gyro_range  = LSM6DS_GYRO_RANGE_2000_DPS;
+        lsm6ds_accel_range_t  accel_range = LSM6DS_ACCEL_RANGE_8_G;
+        lsm6ds_data_rate_t    data_rate   = LSM6DS_RATE_833_HZ;
         lsm6ds_hp_filter_t    hp_filter   = LSM6DS_HPF_ODR_DIV_400;
     } settings;
 
@@ -61,10 +61,6 @@ public:
         sensors_event_t accel{};
         sensors_event_t gyro{};
     } raw_data, filtered_data;
-
-    static float g_to_mps(float g){
-        return g * 1.0F;
-    };
 };
 
 void setup_imu(imu_T& imu, unsigned long baudrate);

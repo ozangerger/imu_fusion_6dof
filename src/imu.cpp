@@ -50,16 +50,16 @@ void print_imu(const imu_T& imu) {
     Serial.println();
 };
 
-void imu_T::update(void) {
+void imu_T::update() {
     sox.readAcceleration(raw_data.accel.acceleration.x, raw_data.accel.acceleration.y, raw_data.accel.acceleration.z);
     sox.readGyroscope(raw_data.gyro.gyro.x, raw_data.gyro.gyro.y, raw_data.gyro.gyro.z);
     this->filter();
 };
 
-void imu_T::filter(void) {
-    filters.accX.Update(g_to_mps(raw_data.accel.acceleration.x));
-    filters.accY.Update(g_to_mps(raw_data.accel.acceleration.y));
-    filters.accZ.Update(g_to_mps(raw_data.accel.acceleration.z));
+void imu_T::filter() {
+    filters.accX.Update(raw_data.accel.acceleration.x);
+    filters.accY.Update(raw_data.accel.acceleration.y);
+    filters.accZ.Update(raw_data.accel.acceleration.z);
 
     filters.gyX.Update(raw_data.gyro.gyro.x);
     filters.gyY.Update(raw_data.gyro.gyro.y);

@@ -4,7 +4,8 @@
 #include "sensor_fusion.h"
 #include "imu.h"
 
-void sensorFusion_T::update(float delta_t) {
+void sensorFusion_T::update() {
+    const float delta_t = sf.deltatUpdate();
     //choose only one of these two:
     sf.MahonyUpdate(imu.filtered_data.gyro.gyro.x, imu.filtered_data.gyro.gyro.y,
                     imu.filtered_data.gyro.gyro.z,imu.filtered_data.accel.acceleration.x,
@@ -23,4 +24,5 @@ void print_sf(const sensorFusion_T& sf) {
     Serial.print(" \tYaw: ");
     Serial.print(sf.yaw);
     Serial.println(" deg ");
+    Serial.println();
 };
