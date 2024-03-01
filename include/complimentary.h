@@ -43,27 +43,29 @@ public:
                               *  imu.filtered_data.gyro.gyro.z) * Ts +
                            Kp * (imu.filtered_data.accel.acceleration.y - prevRoll);
 
-        filters.pitch.Update(std::max(std::min(data.pitch, 180.0F), -180.0F));
-        filters.roll.Update(std::max(std::min(data.roll, 180.0F), -180.0F));
+        filters.pitch.Update(std::max(std::min(data.pitch, (float)M_PI), -(float)M_PI));
+        filters.roll.Update( std::max(std::min(data.roll,  (float)M_PI), -(float)M_PI));
 
         data.pitch = filters.pitch.GetOutput();
-        data.roll = filters.roll.GetOutput();
+        data.roll  = filters.roll.GetOutput();
 
         prevRoll   = data.roll;
         prevPitch  = data.pitch;
     }
 
     float GetRollOutput() const { return data.roll; };
+    float GetRollOutputDeg() const { return data.roll * (float)RAD_TO_DEG; };
 
     float GetPitchOutput() const { return data.pitch; };
+    float GetPitchOutputDeg() const { return data.pitch * (float)RAD_TO_DEG; };
 };
 
 void PrintCf(const complFilt_T& cf) {
-    Serial.print("\t\tpitch -  complimentary: ");
-    Serial.print(cf.GetPitchOutput());
-    Serial.print("\troll - complimentary: ");
-    Serial.print(cf.GetRollOutput());
-    Serial.println();
+    //Serial.print("\t\tpitch -  complimentary: ");
+    Serial.print(cf.GetPitchOutputDeg());
+    Serial.print(",");
+    //Serial.print("\troll - complimentary: ");
+    Serial.print(cf.GetRollOutputDeg());
 }
 
 #endif //IMU_FUSION_6DOF_COMPLIMENTARY_H

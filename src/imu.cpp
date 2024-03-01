@@ -32,28 +32,31 @@ void SetupImu(imu_T& imu, unsigned long baudrate) {
 };
 
 void PrintImu(const imu_T& imu) {
-    // Display the results (acceleration is measured in m/s^2)
-    Serial.print("\t\tAccel X:");
+    // Display the results (acceleration is converted to m/s^2)
+    //Serial.print("\t\tAccel X:");
     Serial.print(imu.filtered_data.accel.acceleration.x);
-    Serial.print("\tY:");
+    Serial.print(",");
+    //Serial.print("\tY:");
     Serial.print(imu.filtered_data.accel.acceleration.y);
-    Serial.print("\tZ:");
+    Serial.print(",");
+    //Serial.print("\tZ:");
     Serial.print(imu.filtered_data.accel.acceleration.z);
-    //Serial.print(" m/s^2 ");
+    Serial.print(",");
 
-    // Display the results (rotation is measured in rad/s)
-    Serial.print("\tGyro X:");
+    // Display the results (rotational speed is converted to rad/s)
+    //Serial.print("GyX:");
     Serial.print(imu.filtered_data.gyro.gyro.x);
-    Serial.print("\tY:");
+    Serial.print(",");
+    //Serial.print(",GyY:");
     Serial.print(imu.filtered_data.gyro.gyro.y);
-    Serial.print("\tZ:");
+    Serial.print(",");
+   // Serial.print(",GyZ:");
     Serial.print(imu.filtered_data.gyro.gyro.z);
-    //Serial.println(" radians/s ");
-    Serial.println();
+    Serial.print(",");
 };
 
 void imu_T::Update() {
-    const float range_gyro = 125.0F * 2 * M_PI;
+    const float range_gyro = 250.0F * DEG_TO_RAD;
 
     if(sox.accelerationAvailable()){
         sox.readAcceleration(raw_data.accel.acceleration.x, raw_data.accel.acceleration.y, raw_data.accel.acceleration.z);
@@ -67,9 +70,13 @@ void imu_T::Update() {
     if(sox.gyroscopeAvailable())
     {
         sox.readGyroscope(raw_data.gyro.gyro.x, raw_data.gyro.gyro.y, raw_data.gyro.gyro.z);
+        raw_data.gyro.gyro.x *= DEG_TO_RAD;
+        raw_data.gyro.gyro.y *= DEG_TO_RAD;
+        raw_data.gyro.gyro.z *= DEG_TO_RAD;
         raw_data.gyro.gyro.x += calibration.offsGyro[0];
         raw_data.gyro.gyro.y += calibration.offsGyro[1];
         raw_data.gyro.gyro.z += calibration.offsGyro[2];
+
         raw_data.gyro.gyro.x = std::max(std::min(raw_data.gyro.gyro.x, range_gyro), -range_gyro);
         raw_data.gyro.gyro.y = std::max(std::min(raw_data.gyro.gyro.y, range_gyro), -range_gyro);
         raw_data.gyro.gyro.z = std::max(std::min(raw_data.gyro.gyro.z, range_gyro), -range_gyro);

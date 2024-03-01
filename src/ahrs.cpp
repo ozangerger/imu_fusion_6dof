@@ -22,11 +22,14 @@ void ahrs_T::Update() {
 };
 
 void PrintAhrs(const ahrs_T& ahrs) {
-    Serial.print("\t\tPitch: ");
+    //Serial.print("Pitch:");
     Serial.print(ahrs.pitch);
-    Serial.print(" \tRoll: ");
+    Serial.print(",");
+    //Serial.print(",Roll:");
     Serial.print(ahrs.roll);
-    Serial.print(" \tYaw: ");
+    Serial.print(",");
+   // Serial.print(",Yaw:");
     Serial.print(ahrs.yaw);
-    Serial.println(" deg ");
+    Serial.print(",");
+    //Serial.println(" deg ");
 };
