@@ -41,6 +41,6 @@ void LowPassFilter::ParamCheck(float cutoffFreq, float samplingTime) {
     }
 }
 
-float LowPassFilter::GetOutput() {
+float LowPassFilter::GetOutput() const{
     return data.output;
 }

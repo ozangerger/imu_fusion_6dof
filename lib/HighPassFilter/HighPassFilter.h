@@ -1,15 +1,17 @@
-#ifndef LOWPASS_FILTER_H
-#define LOWPASS_FILTER_H
+#ifndef HIGHPASS_FILTER_H
+#define HIGHPASS_FILTER_H
 
-class LowPassFilter {
+class HighPassFilter {
 public:
-    LowPassFilter(float cutoffFreq, float samplingTime);
+    HighPassFilter() = delete;
+
+    HighPassFilter(float cutoffFreq, float samplingTime);
 
     void Update(float input);
 
     void Reconfigure(float cutoffFreq, float samplingTime);
 
-    float GetOutput() const;
+    float GetOutput();
 
 private:
     void CalculateAlpha();
@@ -25,9 +27,9 @@ private:
     struct data {
         float prevOutput;
         float output;
+        float prevInput;
     } data{};
 
 };
 
 #endif
-
