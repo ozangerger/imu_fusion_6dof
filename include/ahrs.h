@@ -24,4 +24,6 @@ public:
 
 void PrintAhrs(const ahrs_T& sf);
 
+void PrintAhrsVis(const ahrs_T& ahrs);
+
 #endif //IMU_FUSION_6DOF_AHRS_H

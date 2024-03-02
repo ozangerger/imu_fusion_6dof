@@ -52,7 +52,6 @@ void PrintImu(const imu_T& imu) {
     Serial.print(",");
    // Serial.print(",GyZ:");
     Serial.print(imu.filtered_data.gyro.gyro.z);
-    Serial.print(",");
 };
 
 void imu_T::Update() {

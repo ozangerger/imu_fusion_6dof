@@ -25,11 +25,16 @@ void PrintAhrs(const ahrs_T& ahrs) {
     //Serial.print("Pitch:");
     Serial.print(ahrs.pitch);
     Serial.print(",");
-    //Serial.print(",Roll:");
     Serial.print(ahrs.roll);
     Serial.print(",");
-   // Serial.print(",Yaw:");
     Serial.print(ahrs.yaw);
+};
+
+void PrintAhrsVis(const ahrs_T& ahrs) {
+    Serial.print(ahrs.pitch);
     Serial.print(",");
-    //Serial.println(" deg ");
+    Serial.print(ahrs.roll * -1.0);
+    Serial.print(",");
+    // yaw is way off, setting to 0.0
+    Serial.println(0.0);
 };
