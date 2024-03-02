@@ -1,6 +1,8 @@
 # imu_fusion_6dof
 Demonstration of 6dof imu fusion with mahony filter
 
+https://youtube.com/shorts/08aQRf6hGlM
+
 ![Example](/doc/imu_visualisation.png)
 <p align="center">Figure 1: IMU Orientation GUI</p>
 
